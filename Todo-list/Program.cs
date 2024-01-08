@@ -1,20 +1,23 @@
-﻿using System.ComponentModel;
-
-namespace lab2;
+﻿namespace lab2;
 
 partial class Program
 {
-    static SortedSet<Task> tasks;
-
-    static Program()
-    {
-        tasks = new SortedSet<Task>(new TaskByDeadline());
-    }
-
     static void Main(string[] args)
     {
         Console.WriteLine("Enter the number of action and press [Enter]. Then follow instructions.");
 
+        PrintStorageVariants();
+        ChooseStorage();
+
+        var api = new Api(storage);
+        Parallel.Invoke(
+         () => api.Run(),
+         () => RunConsoleCommands());
+
+    }
+
+    static void RunConsoleCommands()
+    {
         for (; ; )
         {
             PrintMenu();
@@ -44,7 +47,6 @@ partial class Program
                 Console.WriteLine("Wrong number of action");
             }
         }
-
     }
 
     static void PrintMenu()
@@ -61,14 +63,10 @@ partial class Program
     {
         Console.WriteLine($"Title: {task.title}");
         Console.WriteLine($"Description: {task.description}");
-        Console.WriteLine("Deadline: {0:dd.MM.yyyy}", task.deadline);
+        Console.WriteLine("Deadline: {0:dd-MM-yyyy}", task.deadline);
         Console.Write("Tags: ");
-        var tagsEn = task.tags.GetEnumerator();
-        while (tagsEn.MoveNext())
-        {
-            Console.Write($"{tagsEn.Current}, ");
-        }
-        Console.WriteLine();
+        string tags = string.Join(", ", task.tags);
+        Console.WriteLine(tags);
     }
 
     static void AddTask()
@@ -99,10 +97,10 @@ partial class Program
 
         task.title = title;
         task.description = description;
-        task.deadline = DateTime.ParseExact(deadline, "dd.MM.yyyy", System.Globalization.CultureInfo.InvariantCulture);
+        task.deadline = DateTime.ParseExact(deadline, "dd-MM-yyyy", System.Globalization.CultureInfo.InvariantCulture);
 
         Console.WriteLine("Tags (finish on empty line)");
-        task.tags = new HashSet<string>();
+        task.tags = [];
         for (int i = 1; ; i++)
         {
             Console.Write($"{i}: ");
@@ -114,12 +112,12 @@ partial class Program
             task.tags.Add(tag);
         }
 
-        tasks.Add(task);
+        storage.CreateTask(task);
     }
 
     static void SearchTask()
     {
-        Console.WriteLine("Search tasks by tag: ");
+        Console.WriteLine("Search tasks by tags: ");
         var tagLine = Console.ReadLine();
         if (tagLine == null || tagLine == "")
         {
@@ -127,19 +125,19 @@ partial class Program
             return;
         }
         string[] tags = tagLine.Split(' ');
+        SortedSet<Task> tasks = storage.FindTasksByTags(tags);
+        if (tasks == null || tasks.Count == 0)
+        {
+            Console.WriteLine("No tasks found by tags");
+            return;
+        }
+
+        Console.WriteLine("Tasks found by tags:");
         var en = tasks.GetEnumerator();
-        Console.WriteLine("Tasks found by tag:");
         while (en.MoveNext())
         {
-            for (int i = 0; i < tags.Length; ++i)
-            {
-                if (en.Current.tags.Contains(tags[i]))
-                {
-                    PrintTask(en.Current);
-                    break;
-                }
-            }
-
+            PrintTask(en.Current);
+            break;
         }
     }
 
@@ -149,13 +147,18 @@ partial class Program
         var line = Console.ReadLine();
         if (Int32.TryParse(line, out int number))
         {
+            SortedSet<Task> tasks = storage.FindLastTasks(number);
+            if (tasks == null || tasks.Count == 0)
+            {
+                Console.WriteLine("No tasks in the storage");
+                return;
+            }
+
             Console.WriteLine("Actual tasks:");
             var en = tasks.GetEnumerator();
-            int i = 0;
-            while (en.MoveNext() && i < number)
+            while (en.MoveNext())
             {
                 PrintTask(en.Current);
-                ++i;
             }
         }
         else

@@ -14,12 +14,17 @@ partial class Program
     {
         public int Compare(Task x, Task y)
         {
-            int val = x.deadline.CompareTo(y.deadline);
-            if (val != 0)
+            int titleVal = x.title.CompareTo(y.title);
+            if (titleVal == 0)
             {
-                return val;
+                return 0; // нужны только уникальные записи
             }
-            return x.title.CompareTo(y.title);
+            int deadlineVal = x.deadline.CompareTo(y.deadline);
+            if (deadlineVal != 0)
+            {
+                return deadlineVal;
+            }
+            return x.description.CompareTo(y.description);
         }
     }
 
