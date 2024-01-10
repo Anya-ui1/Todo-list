@@ -1,26 +1,8 @@
-namespace lab2;
+namespace TodoList;
 
-partial class Program
+public partial class App
 {
     static IStorage storage;
-
-    interface IStorage
-    {
-        enum StorageType
-        {
-            jsonStorage = 1,
-            xmlStorage,
-            sqliteStorage
-        }
-
-        public abstract bool CreateTask(Task task);
-        public abstract bool UpdateTask(Task task);
-        public abstract bool DeleteTask(string title);
-        public abstract Task FindTaskByTitle(string title);
-        public abstract SortedSet<Task> FindTasksByTags(string[] tags);
-        public abstract SortedSet<Task> FindLastTasks(int number);
-        public abstract SortedSet<Task> GetAllTasks();
-    }
 
     static void PrintStorageVariants()
     {
@@ -45,7 +27,7 @@ partial class Program
                     storage = new XmlStorage();
                     break;
                 case (int)IStorage.StorageType.sqliteStorage:
-                    storage = new SqliteStorageStorage();
+                    storage = new SqliteStorage();
                     break;
                 default:
                     storage = new InMemoryStorage();
@@ -58,4 +40,22 @@ partial class Program
             Console.WriteLine("Wrong number of action, storage will be just in memory");
         }
     }
+}
+
+interface IStorage
+{
+    enum StorageType
+    {
+        jsonStorage = 1,
+        xmlStorage,
+        sqliteStorage
+    }
+
+    public abstract bool CreateTask(Task task);
+    public abstract bool UpdateTask(Task task);
+    public abstract bool DeleteTask(string title);
+    public abstract Task FindTaskByTitle(string title);
+    public abstract SortedSet<Task> FindTasksByTags(string[] tags);
+    public abstract SortedSet<Task> FindLastTasks(int number);
+    public abstract SortedSet<Task> GetAllTasks();
 }

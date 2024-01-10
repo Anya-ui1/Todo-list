@@ -1,8 +1,7 @@
-namespace lab2;
-
-partial class Program
+namespace TodoList
 {
-    struct Task
+
+    public struct Task
     {
         public string title;
         public string description;
@@ -27,5 +26,4 @@ partial class Program
             return x.description.CompareTo(y.description);
         }
     }
-
 }

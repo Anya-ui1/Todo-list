@@ -1,0 +1,140 @@
+﻿<Application x:Class="TodoList.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:TodoList"
+             Startup="AppStartup"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/TodoList;component/Styles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <local:DateConverter x:Key="DateConverter" />
+
+            <DataTemplate DataType="{x:Type local:TaskItem}" >
+                <Border Style="{StaticResource TaskItemBorderStyle}" Name="border">
+                    <Grid Name="TaskItemsGrid">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Row="0" Grid.Column="0" Margin="0,0,8,0"
+                                   Name="taskTitle"
+                                   Style="{StaticResource SmallTitleStyle}">
+                            Title:
+                        </TextBlock>
+                        <TextBlock Name="taskTitleValue" Grid.Row="0" Grid.Column="1"
+                                   Text="{Binding Path=Title}"
+                                   Style="{StaticResource TextStyleTextBlock}" />
+
+                        <TextBlock Grid.Row="1" Grid.Column="0" Margin="0,0,8,0"
+                                   Name="taskDescription"
+                                   Style="{StaticResource SmallTitleStyle}">
+                            Description:
+                        </TextBlock>
+                        <TextBlock Name="taskDescriptionValue" Grid.Row="1" Grid.Column="1"
+                                   Text="{Binding Path=Description}"
+                                   Style="{StaticResource TextStyleTextBlock}" />
+                        <TextBlock Grid.Row="2" Grid.Column="0" Margin="0,0,8,0"
+                                   Name="taskDeadline"
+                                   Style="{StaticResource SmallTitleStyle}">
+                            Deadline:
+                        </TextBlock>
+                        <TextBlock Name="taskDeadlineValue" Grid.Row="2" Grid.Column="1"
+                                   Text="{Binding Path=Deadline, Converter={StaticResource DateConverter}}"
+                                   Style="{StaticResource TextStyleTextBlock}" />
+                    </Grid>
+                </Border>
+                <!-- <DataTemplate.Triggers>
+                    <DataTrigger Binding="{Binding Path=SpecialFeatures}" >
+                        <DataTrigger.Value>
+                            <local:SpecialFeatures>Color</local:SpecialFeatures>
+                        </DataTrigger.Value>
+                        <DataTrigger.Setters>
+                            <Setter Property="BorderBrush" Value="DodgerBlue" TargetName="border" />
+                            <Setter Property="Foreground" Value="Navy" TargetName="descriptionTitle" />
+                            <Setter Property="Foreground" Value="Navy" TargetName="currentPriceTitle" />
+                            <Setter Property="BorderThickness" Value="3" TargetName="border" />
+                            <Setter Property="Padding" Value="5" TargetName="border" />
+                        </DataTrigger.Setters>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Path=SpecialFeatures}">
+                        <DataTrigger.Value>
+                            <local:SpecialFeatures>Highlight</local:SpecialFeatures>
+                        </DataTrigger.Value>
+                        <Setter Property="BorderBrush" Value="Orange" TargetName="border" />
+                        <Setter Property="Foreground" Value="Navy" TargetName="descriptionTitle" />
+                        <Setter Property="Foreground" Value="Navy" TargetName="currentPriceTitle" />
+                        <Setter Property="Visibility" Value="Visible" TargetName="star" />
+                        <Setter Property="BorderThickness" Value="3" TargetName="border" />
+                        <Setter Property="Padding" Value="5" TargetName="border" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Path=(SystemParameters.HighContrast)}" Value="true" >
+                        <Setter TargetName="descriptionTitle" Property="TextBlock.Foreground" Value="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"/>
+                        <Setter TargetName="currentPriceTitle" Property="TextBlock.Foreground" Value="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"/>
+                    </DataTrigger>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}, Path=IsSelected}" Value="True" />
+                            <Condition Binding="{Binding Path=(SystemParameters.HighContrast)}" Value="true" />
+                        </MultiDataTrigger.Conditions>
+                        <MultiDataTrigger.Setters>
+                            <Setter TargetName="descriptionTitle" Property="TextBlock.Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"/>
+                            <Setter TargetName="DescriptionDTDataType" Property="TextBlock.Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"/>
+                            <Setter TargetName="currentPriceTitle" Property="TextBlock.Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"/>
+                            <Setter TargetName="Dollar" Property="TextBlock.Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"/>
+                            <Setter TargetName="CurrentPriceDTDataType" Property="TextBlock.Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"/>
+                        </MultiDataTrigger.Setters>
+                    </MultiDataTrigger>
+                </DataTemplate.Triggers> -->
+            </DataTemplate>
+
+            <DataTemplate x:Key="DetailsTaskListingTemplate">
+                <Grid Margin="5,5,5,10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Row="0" Grid.Column="0" Margin="0,0,8,0"
+                               Name="titleTitle"
+                               Style="{StaticResource SmallTitleStyle}">
+                        Title:
+                    </TextBlock>
+                    <TextBlock Name="TitleDTKey" Grid.Row="0" Grid.Column="1"
+                               Text="{Binding Path=Title}"
+                               Style="{StaticResource TextStyleTextBlock}" />
+                    <TextBlock Grid.Row="1" Grid.Column="0" Margin="0,0,8,0"
+                               Name="descriptionTitle"
+                               Style="{StaticResource SmallTitleStyle}">
+                        Description:
+                    </TextBlock>
+                    <TextBlock Name="DescriptionDTKey" Grid.Row="1" Grid.Column="1"
+                               Text="{Binding Path=Description}"
+                               Style="{StaticResource TextStyleTextBlock}" />
+
+                    <TextBlock Grid.Row="2" Grid.Column="0" Margin="0,0,8,0"
+                               Name="startPriceTitle"
+                               Style="{StaticResource SmallTitleStyle}">
+                        Deadline:
+                    </TextBlock>
+                    <TextBlock Name="StartDateDTKey" Grid.Row="2" Grid.Column="1"
+                               Text="{Binding Path=Deadline, Converter={StaticResource DateConverter}}"
+                               Style="{StaticResource TextStyleTextBlock}" />
+                </Grid>
+            </DataTemplate>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
